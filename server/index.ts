@@ -16,27 +16,40 @@ import taskRoutes from './routes/tasks';
 // Load environment variables
 dotenv.config();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ============================================
-// MIDDLEWARE
+// MIDDLEWARE CONFIGURATION
 // ============================================
 
-// Build for deployment behind proxy (Render)
-app.set('trust proxy', 1);
+// 1. TRUST PROXY (Critical for Render/Production)
+if (isProduction) {
+  app.set('trust proxy', 1); // Trust first proxy (Render Load Balancer)
+}
 
-// CORS
+// 2. CORS CONFIGURATION
+const clientUrl = process.env.CLIENT_URL || (isProduction 
+  ? 'https://nuklias.netlify.app' 
+  : 'http://localhost:5000');
+
+console.log(`🔒 CORS Configured for: ${clientUrl}`);
+console.log(`🌍 Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5000',
-  credentials: true,
+  origin: clientUrl,
+  credentials: true, // Allow cookies
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session configuration
+// 3. SESSION CONFIGURATION
 const PgSession = connectPgSimple(session);
 
 app.use(
@@ -45,14 +58,15 @@ app.use(
       conString: process.env.DATABASE_URL,
       createTableIfMissing: true,
     }),
-    secret: process.env.SESSION_SECRET || 'your-secret-key-change-this',
+    secret: process.env.SESSION_SECRET || 'dev-secret-key',
     resave: false,
     saveUninitialized: false,
+    proxy: isProduction, // Important for secure cookies behind proxy
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true in production
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-domain
+      httpOnly: true, // Prevents JS access to cookie
+      secure: isProduction, // TRUE in production (HTTPS), FALSE locally (HTTP)
+      sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-site (Render<->Netlify), 'lax' for local
     },
   })
 );
