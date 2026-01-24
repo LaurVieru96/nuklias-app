@@ -23,6 +23,9 @@ const PORT = process.env.PORT || 3000;
 // MIDDLEWARE
 // ============================================
 
+// Build for deployment behind proxy (Render)
+app.set('trust proxy', 1);
+
 // CORS
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5000',
