@@ -1,6 +1,6 @@
 import { db } from '../db/index';
 import { tasks } from '../db/schema';
-import { eq, and, isNull, sql, ilike, or, gte, lte } from 'drizzle-orm';
+import { eq, and, isNull, sql, ilike, or, gte, lte, inArray } from 'drizzle-orm';
 import type { Task, CreateTaskInput, UpdateTaskInput, TaskFilters } from '../../shared/types';
 
 /**
@@ -11,12 +11,12 @@ export async function listTasks(filters: TaskFilters = {}, limit = 20, offset = 
 
   // Status filter
   if (filters.status && filters.status.length > 0) {
-    conditions.push(sql`${tasks.status} = ANY(${filters.status})`);
+    conditions.push(inArray(tasks.status, filters.status));
   }
 
   // Priority filter
   if (filters.priority && filters.priority.length > 0) {
-    conditions.push(sql`${tasks.priority} = ANY(${filters.priority})`);
+    conditions.push(inArray(tasks.priority, filters.priority));
   }
 
   // Assigned to filter

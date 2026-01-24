@@ -24,10 +24,17 @@ router.get('/', async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 20;
     const offset = parseInt(req.query.offset as string) || 0;
 
+    // Helper to parse array fields
+    const parseArray = (input: any) => {
+        if (Array.isArray(input)) return input;
+        if (typeof input === 'string') return input.split(',');
+        return undefined;
+    };
+
     // Parse filters
     const filters = {
-      status: req.query.status ? (req.query.status as string).split(',') as any : undefined,
-      priority: req.query.priority ? (req.query.priority as string).split(',') as any : undefined,
+      status: parseArray(req.query.status),
+      priority: parseArray(req.query.priority),
       assignedTo: req.query.assignedTo as string,
       search: req.query.search as string,
       startDate: req.query.startDate as string,

@@ -1,6 +1,6 @@
 import { db } from '../db/index';
 import { leads } from '../db/schema';
-import { eq, and, isNull, sql, ilike, or, gte, lte } from 'drizzle-orm';
+import { eq, and, isNull, sql, ilike, or, gte, lte, inArray } from 'drizzle-orm';
 import type { Lead, CreateLeadInput, UpdateLeadInput, LeadFilters } from '../../shared/types';
 
 /**
@@ -11,12 +11,12 @@ export async function listLeads(filters: LeadFilters = {}, limit = 20, offset = 
 
   // Status filter
   if (filters.status && filters.status.length > 0) {
-    conditions.push(sql`${leads.status} = ANY(${filters.status})`);
+    conditions.push(inArray(leads.status, filters.status));
   }
 
   // Priority filter
   if (filters.priority && filters.priority.length > 0) {
-    conditions.push(sql`${leads.priority} = ANY(${filters.priority})`);
+    conditions.push(inArray(leads.priority, filters.priority));
   }
 
   // Assigned to filter

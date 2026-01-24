@@ -12,6 +12,7 @@ import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import leadRoutes from './routes/leads';
 import taskRoutes from './routes/tasks';
+import statsRoutes from './routes/stats';
 
 // Load environment variables
 dotenv.config();
@@ -99,9 +100,8 @@ app.use('/api/leads', leadRoutes);
 // Tasks routes
 app.use('/api/tasks', taskRoutes);
 
-// TODO: Add more routes
-// import statsRoutes from './routes/stats';
-// app.use('/api/stats', statsRoutes);
+// Stats routes
+app.use('/api/stats', statsRoutes);
 
 // ============================================
 // ERROR HANDLING
