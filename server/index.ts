@@ -31,9 +31,7 @@ if (isProduction) {
 }
 
 // 2. CORS CONFIGURATION
-const clientUrl = process.env.CLIENT_URL || (isProduction 
-  ? 'https://nuklias.netlify.app' 
-  : 'http://localhost:5000');
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:5000';
 
 console.log(`🔒 CORS Configured for: ${clientUrl}`);
 console.log(`🌍 Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
@@ -50,6 +48,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 3. SESSION CONFIGURATION
+if (isProduction && !process.env.SESSION_SECRET) {
+  console.error("❌ CRITICAL: SESSION_SECRET must be set in production!");
+  process.exit(1);
+}
+
 const PgSession = connectPgSimple(session);
 
 app.use(
