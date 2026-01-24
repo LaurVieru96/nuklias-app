@@ -13,7 +13,7 @@
     "db:seed": "tsx server/db/seed.ts"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.10.6",
+    "@neondatabase/serverless": "^0.10.2",
     "bcrypt": "^5.1.1",
     "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.5",
