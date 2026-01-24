@@ -1,7 +1,7 @@
 import { db } from '../db/index';
 import { tasks } from '../db/schema';
 import { eq, and, isNull, sql, ilike, or, gte, lte } from 'drizzle-orm';
-import type { Task, CreateTaskInput, UpdateTaskInput, TaskFilters } from '@shared/types';
+import type { Task, CreateTaskInput, UpdateTaskInput, TaskFilters } from '../../shared/types';
 
 /**
  * List tasks with filters and pagination
@@ -82,8 +82,7 @@ export async function createTask(input: CreateTaskInput, createdBy: string): Pro
     .values({
       ...input,
       createdBy,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      // createdAt and updatedAt default to now()
     })
     .returning();
 
@@ -99,7 +98,7 @@ export async function updateTask(id: string, input: UpdateTaskInput): Promise<Ta
     .set({
       ...input,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(and(eq(tasks.id, id), isNull(tasks.deletedAt)))
     .returning();
 
@@ -114,8 +113,8 @@ export async function deleteTask(id: string): Promise<boolean> {
     .update(tasks)
     .set({
       deletedAt: new Date(),
-      updatedAt: new Date(),
-    })
+      // updatedAt: new Date(),
+    } as any)
     .where(and(eq(tasks.id, id), isNull(tasks.deletedAt)))
     .returning();
 

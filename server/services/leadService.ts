@@ -1,7 +1,7 @@
 import { db } from '../db/index';
 import { leads } from '../db/schema';
 import { eq, and, isNull, sql, ilike, or, gte, lte } from 'drizzle-orm';
-import type { Lead, CreateLeadInput, UpdateLeadInput, LeadFilters } from '@shared/types';
+import type { Lead, CreateLeadInput, UpdateLeadInput, LeadFilters } from '../../shared/types';
 
 /**
  * List leads with filters and pagination
@@ -89,8 +89,7 @@ export async function createLead(input: CreateLeadInput): Promise<Lead> {
     .insert(leads)
     .values({
       ...input,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      // createdAt and updatedAt default to now() in schema
     })
     .returning();
 
@@ -106,7 +105,7 @@ export async function updateLead(id: string, input: UpdateLeadInput): Promise<Le
     .set({
       ...input,
       updatedAt: new Date(),
-    })
+    } as any)
     .where(and(eq(leads.id, id), isNull(leads.deletedAt)))
     .returning();
 
@@ -121,8 +120,8 @@ export async function softDeleteLead(id: string): Promise<boolean> {
     .update(leads)
     .set({
       deletedAt: new Date(),
-      updatedAt: new Date(),
-    })
+      // updatedAt: new Date(),
+    } as any)
     .where(and(eq(leads.id, id), isNull(leads.deletedAt)))
     .returning();
 

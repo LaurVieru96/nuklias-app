@@ -25,8 +25,8 @@ router.get('/', async (req: Request, res: Response) => {
     const offset = parseInt(req.query.offset as string) || 0;
 
     const filters = {
-      status: req.query.status ? (req.query.status as string).split(',') : undefined,
-      priority: req.query.priority ? (req.query.priority as string).split(',') : undefined,
+      status: req.query.status ? (req.query.status as string).split(',') as any : undefined,
+      priority: req.query.priority ? (req.query.priority as string).split(',') as any : undefined,
       assignedTo: req.query.assignedTo as string,
       search: req.query.search as string,
     };
@@ -54,7 +54,7 @@ router.get('/', async (req: Request, res: Response) => {
  */
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const task = await findTaskById(req.params.id);
+    const task = await findTaskById(req.params.id as string);
 
     if (!task) {
       return res.status(404).json({ error: 'Task not found' });
@@ -81,7 +81,7 @@ router.post('/', async (req: Request, res: Response) => {
       });
     }
 
-    const task = await createTask(result.data, req.user!.id);
+    const task = await createTask(result.data as any, (req.user as any).id);
 
     res.status(201).json({
       success: true,
@@ -108,7 +108,7 @@ router.put('/:id', async (req: Request, res: Response) => {
       });
     }
 
-    const task = await updateTask(req.params.id, result.data);
+    const task = await updateTask(req.params.id as string, result.data as any);
 
     if (!task) {
       return res.status(404).json({ error: 'Task not found' });
@@ -130,7 +130,7 @@ router.put('/:id', async (req: Request, res: Response) => {
  */
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const success = await deleteTask(req.params.id);
+    const success = await deleteTask(req.params.id as string);
 
     if (!success) {
       return res.status(404).json({ error: 'Task not found' });

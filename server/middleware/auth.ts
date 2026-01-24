@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import type { UserRole } from '@shared/types';
+import type { UserRole } from '../../shared/types';
 
 /**
  * Middleware to require authentication

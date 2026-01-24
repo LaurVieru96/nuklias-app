@@ -20,7 +20,7 @@ async function seed() {
       firstName: 'Admin',
       lastName: 'User',
       role: 'admin',
-      isActive: true,
+      // isActive defaults to true
     }).returning();
 
     console.log('✅ Created admin user:');
@@ -37,7 +37,7 @@ async function seed() {
       firstName: 'Test',
       lastName: 'Member',
       role: 'member',
-      isActive: true,
+      // isActive defaults to true
     }).returning();
 
     console.log('✅ Created member user:');

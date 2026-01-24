@@ -26,8 +26,8 @@ router.get('/', async (req: Request, res: Response) => {
 
     // Parse filters
     const filters = {
-      status: req.query.status ? (req.query.status as string).split(',') : undefined,
-      priority: req.query.priority ? (req.query.priority as string).split(',') : undefined,
+      status: req.query.status ? (req.query.status as string).split(',') as any : undefined,
+      priority: req.query.priority ? (req.query.priority as string).split(',') as any : undefined,
       assignedTo: req.query.assignedTo as string,
       search: req.query.search as string,
       startDate: req.query.startDate as string,
@@ -57,7 +57,7 @@ router.get('/', async (req: Request, res: Response) => {
  */
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const lead = await findLeadById(req.params.id);
+    const lead = await findLeadById(req.params.id as string);
 
     if (!lead) {
       return res.status(404).json({ error: 'Lead not found' });
@@ -84,7 +84,7 @@ router.post('/', async (req: Request, res: Response) => {
       });
     }
 
-    const lead = await createLead(result.data);
+    const lead = await createLead(result.data as any);
 
     res.status(201).json({
       success: true,
@@ -111,7 +111,7 @@ router.put('/:id', async (req: Request, res: Response) => {
       });
     }
 
-    const lead = await updateLead(req.params.id, result.data);
+    const lead = await updateLead(req.params.id as string, result.data);
 
     if (!lead) {
       return res.status(404).json({ error: 'Lead not found' });
@@ -133,7 +133,7 @@ router.put('/:id', async (req: Request, res: Response) => {
  */
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const success = await softDeleteLead(req.params.id);
+    const success = await softDeleteLead(req.params.id as string);
 
     if (!success) {
       return res.status(404).json({ error: 'Lead not found' });

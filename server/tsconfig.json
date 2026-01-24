@@ -1,17 +1,18 @@
 {
-  "extends": "../tsconfig.json",
+
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "skipLibCheck": true,
     "target": "ES2022",
     "lib": ["ES2022"],
-    "outDir": "../dist/server",
-    "rootDir": ".",
+    "outDir": "../dist",
+    "rootDir": "..",
     "baseUrl": ".",
     "paths": {
       "@shared/*": ["../shared/*"]
     }
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "../shared/**/*.ts"],
   "exclude": ["node_modules"]
 }

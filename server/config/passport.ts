@@ -2,7 +2,7 @@ import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { findUserByEmail, findUserById } from '../services/userService';
 import { comparePassword } from '../utils/password';
-import type { UserWithPassword } from '@shared/types';
+import type { UserWithPassword } from '../../shared/types';
 
 /**
  * Configure Passport Local Strategy

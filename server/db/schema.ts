@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, boolean, integer, uuid } from 'drizzle-orm/pg-core';
-import type { UserRole, LeadStatus, LeadPriority, LeadSource, TaskStatus, TaskPriority } from '@shared/types';
+import type { UserRole, LeadStatus, LeadPriority, LeadSource, TaskStatus, TaskPriority } from '../../shared/types';
 
 // ============================================
 // USERS TABLE

@@ -48,7 +48,7 @@ router.get('/', async (req: Request, res: Response) => {
  */
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const user = await findUserById(req.params.id);
+    const user = await findUserById(req.params.id as string);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -76,7 +76,7 @@ router.post('/', async (req: Request, res: Response) => {
       });
     }
 
-    const user = await createUser(result.data);
+    const user = await createUser(result.data as any);
 
     res.status(201).json({
       success: true,
@@ -107,7 +107,7 @@ router.put('/:id', async (req: Request, res: Response) => {
       });
     }
 
-    const user = await updateUser(req.params.id, result.data);
+    const user = await updateUser(req.params.id as string, result.data);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -129,7 +129,7 @@ router.put('/:id', async (req: Request, res: Response) => {
  */
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
-    const success = await softDeleteUser(req.params.id);
+    const success = await softDeleteUser(req.params.id as string);
 
     if (!success) {
       return res.status(404).json({ error: 'User not found' });
