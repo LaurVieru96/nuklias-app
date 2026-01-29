@@ -12,11 +12,20 @@ router.use(requireAuth);
 router.get('/dashboard', async (req: Request, res: Response) => {
   try {
     // Execute counts in parallel for performance
-    const [leadsCount, activeTasksCount, teamCount] = await Promise.all([
+    const [leadsCount, wonLeadsCount, activeTasksCount, teamCount] = await Promise.all([
       // Total Leads (Active)
       db.select({ count: sql<number>`count(*)` })
         .from(leads)
         .where(isNull(leads.deletedAt))
+        .then(rows => Number(rows[0].count)),
+
+      // Won Leads (Conversion)
+      db.select({ count: sql<number>`count(*)` })
+        .from(leads)
+        .where(and(
+          isNull(leads.deletedAt),
+          eq(leads.status, 'won' as any)
+        ))
         .then(rows => Number(rows[0].count)),
 
       // Active Tasks (Not completed)
@@ -35,9 +44,10 @@ router.get('/dashboard', async (req: Request, res: Response) => {
         .then(rows => Number(rows[0].count))
     ]);
 
-    // Calculate a mock "conversion rate" or derive it if possible
-    // For now, hardcode or randomize slightly for "real feel" if no real data logic exists
-    const conversionRate = leadsCount > 0 ? Math.round((leadsCount / (leadsCount + 5)) * 100) : 0; 
+    // Calculate real conversion rate: (Won Leads / Total Leads) * 100
+    const conversionRate = leadsCount > 0 
+      ? Math.round((wonLeadsCount / leadsCount) * 100) 
+      : 0;
 
     res.json({
       success: true,
