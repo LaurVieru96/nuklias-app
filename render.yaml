@@ -15,7 +15,5 @@ services:
       - key: SESSION_SECRET
         generateValue: true  # Render va genera automat
       - key: CLIENT_URL
-        sync: false  # URL-ul frontend-ului tău
-      - key: PORT
-        value: 3000
+        sync: false  # URL-ul frontend-ului tău (https://nuklias.netlify.app)
     healthCheckPath: /api/health
