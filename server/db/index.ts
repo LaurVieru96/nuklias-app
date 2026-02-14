@@ -15,7 +15,8 @@ if (!process.env.DATABASE_URL) {
 
 // Detect if we're running in a serverless environment (Render)
 // or in a standard environment (Docker, local development)
-const isServerless = process.env.RENDER === 'true' || process.env.NODE_ENV === 'production';
+const isServerless = (process.env.RENDER === 'true' || process.env.NODE_ENV === 'production') 
+  && process.env.FORCE_STANDARD_DRIVER !== 'true';
 
 let db;
 
