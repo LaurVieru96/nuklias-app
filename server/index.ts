@@ -32,13 +32,24 @@ if (isProduction) {
 }
 
 // 2. CORS CONFIGURATION
-const clientUrl = process.env.CLIENT_URL || 'http://localhost:5000';
+// Support multiple origins (comma-separated in CLIENT_URL)
+const clientUrlString = process.env.CLIENT_URL || 'http://localhost:5000';
+const allowedOrigins = clientUrlString.split(',').map(url => url.trim());
 
-console.log(`🔒 CORS Configured for: ${clientUrl}`);
+console.log(`🔒 CORS Configured for: ${allowedOrigins.join(', ')}`);
 console.log(`🌍 Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
 
 app.use(cors({
-  origin: clientUrl,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    }
+  },
   credentials: true, // Allow cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
