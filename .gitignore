@@ -23,3 +23,5 @@ Thumbs.db
 
 # Drizzle
 drizzle/
+
+docker-compose.yml
